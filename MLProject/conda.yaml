@@ -1,4 +1,4 @@
-name: iris-classification-ci
+name: skintype-classification-ci
 channels:
   - defaults
   - conda-forge

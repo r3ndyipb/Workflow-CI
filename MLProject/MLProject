@@ -1,9 +1,9 @@
-name: Iris-Classification-CI
+name: SkinType-Classification-CI
 
 conda_env: conda.yaml
 
 entry_points:
   main:
     parameters:
-      data_path: {type: str, default: "iris_preprocessing.csv"}
+      data_path: {type: str, default: "skin_type_preprocessing.csv"}
     command: "python modelling.py"
