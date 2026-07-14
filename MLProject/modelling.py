@@ -81,7 +81,7 @@ def evaluate_model(model, X_test, y_test):
 
 if __name__ == "__main__":
     data_path = os.environ.get("DATA_PATH", "iris_preprocessing.csv")
-    tracking_uri = os.environ.get("MLFLOW_TRACKING_URI", "http://127.0.0.1:5000")
+    tracking_uri = os.environ.get("MLFLOW_TRACKING_URI", "http://127.0.0.1:5001")
 
     X, y = load_preprocessed_data(data_path)
     X_train, X_test, y_train, y_test = train_test_split(
