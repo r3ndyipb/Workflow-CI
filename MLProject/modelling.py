@@ -115,7 +115,6 @@ if __name__ == "__main__":
     data_path = os.path.join(script_dir, "skin_type_preprocessing.csv")
     X, y = load_preprocessed_data(data_path)
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
-    mlflow.set_tracking_uri("http://127.0.0.1:5001")
     mlflow.set_experiment("SkinType_Classification_Tuning")
     best_model, best_params, best_cv_score = perform_hyperparameter_tuning(X_train, y_train)
     metrics = evaluate_model(best_model, X_test, y_test)

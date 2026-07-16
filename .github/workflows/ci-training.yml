@@ -23,29 +23,18 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install mlflow==2.19.0 scikit-learn pandas numpy
-
-      - name: Verify dataset exists
-        run: |
-          ls -la MLProject/
-          echo "Dataset file found"
+          pip install mlflow==2.19.0 scikit-learn pandas numpy joblib
 
       - name: Run MLflow Project
         run: |
-          cd MLProject
-          mlflow run . -P data_path=skin_type_preprocessing.csv
-
-      - name: Train model and save artifacts
-        run: |
-          cd MLProject
-          python modelling.py
+          mlflow run MLProject --env-manager=local
 
       - name: Upload model artifacts
         uses: actions/upload-artifact@v4
         with:
           name: model-artifacts
           path: |
-            MLProject/modelling_ci.log
+            MLProject/mlruns/
           retention-days: 30
 
   build-docker:
@@ -62,12 +51,12 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Install MLflow
-        run: pip install mlflow==2.19.0 scikit-learn pandas numpy
+      - name: Install dependencies
+        run: |
+          pip install mlflow==2.19.0 scikit-learn pandas numpy
 
       - name: Build Docker image with MLflow
         run: |
-          cd MLProject
           mlflow build-docker -n skintype-model-ci:latest
 
       - name: Log Docker image info
