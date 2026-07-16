@@ -36,30 +36,3 @@ jobs:
           path: |
             MLProject/mlruns/
           retention-days: 30
-
-  build-docker:
-    needs: train-model
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
-      - name: Install dependencies
-        run: |
-          pip install mlflow==2.19.0 scikit-learn pandas numpy
-
-      - name: Build Docker image with MLflow
-        run: |
-          mlflow build-docker -n skintype-model-ci:latest
-
-      - name: Log Docker image info
-        run: |
-          echo "Docker image built successfully: skintype-model-ci:latest"
-          docker images | grep skintype-model-ci || echo "Image built via mlflow"
