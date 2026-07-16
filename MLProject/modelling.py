@@ -69,50 +69,44 @@ def evaluate_model(model, X_test, y_test):
 
 def manual_logging(run_name, model, metrics, best_params, best_cv_score, X_train, y_train, X_test, y_test):
     logger.info(f"Starting MLflow manual logging: {run_name}")
-    active_run = mlflow.active_run()
-    if active_run:
-        run_context = mlflow.start_run(run_id=active_run.info.run_id, nested=True)
-    else:
-        run_context = mlflow.start_run(run_name=run_name)
-    with run_context:
-        mlflow.log_params(best_params)
-        mlflow.log_param("cv_folds", 5)
-        mlflow.log_param("random_state", 42)
-        mlflow.log_param("test_size", 0.2)
-        mlflow.log_param("model_type", "RandomForestClassifier")
-        mlflow.log_param("n_features", X_train.shape[1])
-        mlflow.log_param("n_train_samples", X_train.shape[0])
-        mlflow.log_param("n_test_samples", X_test.shape[0])
-        mlflow.log_metric("accuracy", metrics["accuracy"])
-        mlflow.log_metric("precision", metrics["precision"])
-        mlflow.log_metric("recall", metrics["recall"])
-        mlflow.log_metric("f1_score", metrics["f1_score"])
-        mlflow.log_metric("mean_roc_auc", metrics["mean_roc_auc"])
-        mlflow.log_metric("best_cv_score", best_cv_score)
-        for class_idx, auc_val in metrics["roc_auc_per_class"].items():
-            mlflow.log_metric(f"roc_auc_class_{class_idx}", auc_val)
-        mlflow.sklearn.log_model(model, "model")
-        logger.info("Model artifact logged.")
-        report_path = "classification_report.json"
-        with open(report_path, "w") as f:
-            json.dump(metrics["classification_report"], f, indent=2)
-        mlflow.log_artifact(report_path)
-        cm_path = "confusion_matrix.json"
-        with open(cm_path, "w") as f:
-            json.dump(metrics["confusion_matrix"], f, indent=2)
-        mlflow.log_artifact(cm_path)
-        model_path = "model_tuning.joblib"
-        joblib.dump(model, model_path)
-        mlflow.log_artifact(model_path)
-        params_path = "best_params.json"
-        with open(params_path, "w") as f:
-            json.dump(best_params, f, indent=2)
-        mlflow.log_artifact(params_path)
-        run_id = mlflow.active_run().info.run_id
-        logger.info(f"MLflow Run ID: {run_id}")
-        for p in [report_path, cm_path, model_path, params_path]:
-            if os.path.exists(p):
-                os.remove(p)
+    mlflow.log_params(best_params)
+    mlflow.log_param("cv_folds", 5)
+    mlflow.log_param("random_state", 42)
+    mlflow.log_param("test_size", 0.2)
+    mlflow.log_param("model_type", "RandomForestClassifier")
+    mlflow.log_param("n_features", X_train.shape[1])
+    mlflow.log_param("n_train_samples", X_train.shape[0])
+    mlflow.log_param("n_test_samples", X_test.shape[0])
+    mlflow.log_metric("accuracy", metrics["accuracy"])
+    mlflow.log_metric("precision", metrics["precision"])
+    mlflow.log_metric("recall", metrics["recall"])
+    mlflow.log_metric("f1_score", metrics["f1_score"])
+    mlflow.log_metric("mean_roc_auc", metrics["mean_roc_auc"])
+    mlflow.log_metric("best_cv_score", best_cv_score)
+    for class_idx, auc_val in metrics["roc_auc_per_class"].items():
+        mlflow.log_metric(f"roc_auc_class_{class_idx}", auc_val)
+    mlflow.sklearn.log_model(model, "model")
+    logger.info("Model artifact logged.")
+    report_path = "classification_report.json"
+    with open(report_path, "w") as f:
+        json.dump(metrics["classification_report"], f, indent=2)
+    mlflow.log_artifact(report_path)
+    cm_path = "confusion_matrix.json"
+    with open(cm_path, "w") as f:
+        json.dump(metrics["confusion_matrix"], f, indent=2)
+    mlflow.log_artifact(cm_path)
+    model_path = "model_tuning.joblib"
+    joblib.dump(model, model_path)
+    mlflow.log_artifact(model_path)
+    params_path = "best_params.json"
+    with open(params_path, "w") as f:
+        json.dump(best_params, f, indent=2)
+    mlflow.log_artifact(params_path)
+    run_id = mlflow.active_run().info.run_id
+    logger.info(f"MLflow Run ID: {run_id}")
+    for p in [report_path, cm_path, model_path, params_path]:
+        if os.path.exists(p):
+            os.remove(p)
     return run_id
 
 if __name__ == "__main__":
