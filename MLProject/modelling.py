@@ -69,7 +69,7 @@ def evaluate_model(model, X_test, y_test):
 
 def manual_logging(run_name, model, metrics, best_params, best_cv_score, X_train, y_train, X_test, y_test):
     logger.info(f"Starting MLflow manual logging: {run_name}")
-    with mlflow.start_run(run_name=run_name):
+    with mlflow.start_run(run_name=run_name, nested=True):
         mlflow.log_params(best_params)
         mlflow.log_param("cv_folds", 5)
         mlflow.log_param("random_state", 42)
